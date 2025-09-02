@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>그린테크 - GREENTECH CO., LTD.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        /* 헤더 스타일 */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 3rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav a:hover {
+            color: #2e7d32;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #2e7d32;
+            transition: width 0.3s;
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        /* 히어로 섹션 */
+        .hero {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.85) 0%, rgba(27, 94, 32, 0.85) 100%), url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 10rem 5% 6rem;
+            text-align: center;
+            margin-top: 70px;
+            position: relative;
+        }
+        
+        /* 대체 이미지 옵션들 (주석 처리됨) */
+        /* 
+        옵션 1 - 반도체 칩 이미지:
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.85) 0%, rgba(27, 94, 32, 0.85) 100%), url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        
+        옵션 2 - 클린룸 이미지:
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.85) 0%, rgba(27, 94, 32, 0.85) 100%), url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        
+        옵션 3 - 기술/혁신 이미지:
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.85) 0%, rgba(27, 94, 32, 0.85) 100%), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80');
+        */
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .mission-vision {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+        
+        .mission-vision h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #4CAF50;
+        }
+        
+        .mission-vision p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        /* 섹션 공통 스타일 */
+        section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #1b5e20;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #4CAF50;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        /* 회사소개 섹션 */
+        .about {
+            background: #f8f9fa;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2e7d32;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .company-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .value-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* 기술 소개 섹션 */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .tech-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-card:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.2);
+        }
+        
+        .tech-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: #4CAF50;
+            transition: left 0.3s;
+        }
+        
+        .tech-card:hover:before {
+            left: 0;
+        }
+        
+        .tech-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+        
+        .tech-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #1b5e20;
+            position: relative;
+        }
+        
+        /* 포트폴리오 섹션 */
+        .portfolio {
+            background: #f8f9fa;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .portfolio-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .portfolio-image {
+            height: 250px;
+            background: linear-gradient(45deg, #e8f5e9, #c8e6c9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+        
+        .portfolio-content {
+            padding: 2rem;
+        }
+        
+        .portfolio-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1b5e20;
+        }
+        
+        /* 연락처 섹션 */
+        .contact {
+            background: #1b5e20;
+            color: white;
+        }
+        
+        .contact h2 {
+            color: white;
+        }
+        
+        .contact h2:after {
+            background: white;
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .contact-info {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .contact-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #4CAF50;
+        }
+        
+        .contact-form {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #c8e6c9;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background: #66BB6A;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* 찾아오는 길 섹션 */
+        .location {
+            padding: 3rem 5%;
+        }
+        
+        .map-container {
+            background: #f0f0f0;
+            height: 400px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            margin: 2rem 0;
+        }
+        
+        .address-info {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* 푸터 */
+        footer {
+            background: #0d3e10;
+            color: white;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-info {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .footer-info p {
+            margin: 0.5rem 0;
+        }
+        
+        /* 반응형 */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .tech-grid,
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 스크롤 애니메이션 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header>
+        <nav>
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="18" fill="#4CAF50"/>
+                    <path d="M20 10 L15 20 L20 30 L25 20 Z" fill="white"/>
+                    <path d="M10 20 L20 15 L30 20 L20 25 Z" fill="white" opacity="0.8"/>
+                </svg>
+                <span>GREENTECH</span>
+            </div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#about">회사소개</a></li>
+                <li><a href="#tech">기술소개</a></li>
+                <li><a href="#portfolio">포트폴리오</a></li>
+                <li><a href="#location">찾아오는길</a></li>
+                <li><a href="#contact">문의</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero" id="home">
+        <h1>(주)그린테크</h1>
+        <p class="subtitle">반도체 부품 및 장비 제작 전문기업</p>
+        <div class="mission-vision">
+            <div style="margin-bottom: 2rem;">
+                <h3>MISSION</h3>
+                <p>"우리의 사명은 예측 가능한 정보와 기술을 제공하여 편리하게 이용할 수 있게 하는 것"</p>
+            </div>
+            <div>
+                <h3>VISION</h3>
+                <p>"원하는 사람과 원하는 환경에서 꼭 필요한 것을 제공하기 위해"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 회사소개 섹션 -->
+    <section class="about fade-in" id="about">
+        <h2>회사소개</h2>
+        <p class="section-subtitle">혁신적인 기술로 반도체 산업의 미래를 선도합니다</p>
+        
+        <div class="about-content">
+            <div class="about-text">
+                <h3>기술과 신뢰의 파트너, 그린테크</h3>
+                <p>
+                    (주)그린테크는 반도체 부품 및 장비 제작 분야에서 축적된 기술력과 노하우를 바탕으로 
+                    고객에게 최상의 솔루션을 제공하는 전문 기업입니다.
+                </p>
+                <p>
+                    끊임없는 연구개발과 품질 혁신을 통해 고객의 성공적인 비즈니스를 지원하며, 
+                    반도체 산업의 발전에 기여하고 있습니다.
+                </p>
+            </div>
+        </div>
+        
+        <div class="company-values">
+            <div class="value-card">
+                <div class="value-icon">🎯</div>
+                <h4>정확성</h4>
+                <p>예측 가능한 정보와 정확한 기술력으로 신뢰할 수 있는 제품을 제공합니다</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">💡</div>
+                <h4>혁신</h4>
+                <p>지속적인 연구개발을 통해 혁신적인 솔루션을 창출합니다</p>
+            </div>
+            <div class="value-card">
+                <div class="value-icon">🤝</div>
+                <h4>파트너십</h4>
+                <p>고객과 함께 성장하는 진정한 비즈니스 파트너가 되겠습니다</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 기술 소개 섹션 -->
+    <section class="tech fade-in" id="tech">
+        <h2>기술 소개</h2>
+        <p class="section-subtitle">그린테크의 핵심 기술과 제품을 소개합니다</p>
+        
+        <div class="tech-grid">
+            <div class="tech-card">
+                <span class="tech-number">01</span>
+                <h3>Flexible Duct</h3>
+                <p>반도체 공정에 최적화된 고품질 플렉시블 덕트 제작 기술을 보유하고 있습니다. 내구성과 유연성을 동시에 만족시키는 제품을 공급합니다.</p>
+            </div>
+            <div class="tech-card">
+                <span class="tech-number">02</span>
+                <h3>Scrubber Part 세정</h3>
+                <p>스크러버 부품의 효율적인 세정 기술로 장비의 수명을 연장하고 공정 효율을 극대화합니다.</p>
+            </div>
+            <div class="tech-card">
+                <span class="tech-number">03</span>
+                <h3>PPE 세정</h3>
+                <p>개인보호장비(PPE)의 전문적인 세정 서비스로 안전하고 깨끗한 작업 환경을 유지합니다.</p>
+            </div>
+            <div class="tech-card">
+                <span class="tech-number">04</span>
+                <h3>THC 측정기 개발</h3>
+                <p>정밀한 THC(Total Hydrocarbon) 측정기 개발로 공정 모니터링의 정확성을 향상시킵니다.</p>
+            </div>
+            <div class="tech-card">
+                <span class="tech-number">05</span>
+                <h3>히팅 관련 제품 개발</h3>
+                <p>반도체 공정에 필요한 다양한 히팅 솔루션을 개발하여 공정 효율성을 극대화합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 포트폴리오 섹션 -->
+    <section class="portfolio fade-in" id="portfolio">
+        <h2>포트폴리오</h2>
+        <p class="section-subtitle">그린테크의 주요 프로젝트와 제품을 확인해보세요</p>
+        
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    Flexible Duct 이미지
+                </div>
+                <div class="portfolio-content">
+                    <h3>고성능 Flexible Duct 시스템</h3>
+                    <p>반도체 Fab 클린룸 환경에 최적화된 플렉시블 덕트 시스템 구축</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    THC 측정기 이미지
+                </div>
+                <div class="portfolio-content">
+                    <h3>차세대 THC 측정기</h3>
+                    <p>실시간 모니터링이 가능한 고정밀 THC 측정기 개발 및 공급</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    히팅 시스템 이미지
+                </div>
+                <div class="portfolio-content">
+                    <h3>맞춤형 히팅 솔루션</h3>
+                    <p>다양한 반도체 공정에 적용 가능한 맞춤형 히팅 시스템 개발</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 찾아오는 길 섹션 -->
+    <section class="location fade-in" id="location">
+        <h2>찾아오는 길</h2>
+        <p class="section-subtitle">그린테크를 방문해주세요</p>
+        
+        <div class="map-container">
+            지도 API 연동 영역
+        </div>
+        
+        <div class="address-info">
+            <h3>주소</h3>
+            <p>경기도 오산시 수목원로88번길 35, 현대테라타워 B동 1005호</p>
+            <p style="margin-top: 1rem; color: #666;">
+                <strong>대중교통:</strong> 지하철 1호선 오산역 하차 후 버스 이용<br>
+                <strong>자가용:</strong> 경부고속도로 오산IC에서 10분 거리
+            </p>
+        </div>
+    </section>
+
+    <!-- 문의 섹션 -->
+    <section class="contact fade-in" id="contact">
+        <h2>문의하기</h2>
+        <p class="section-subtitle">그린테크와 함께 성장하세요</p>
+        
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h4>📞 전화</h4>
+                    <p>Office: 070-7010-7988<br>
+                    Mobile: 010-4228-5914<br>
+                    Fax: 031-665-2833</p>
+                </div>
+                <div class="contact-item">
+                    <h4>✉️ 이메일</h4>
+                    <p>jalhanda88@gmail.com<br>
+                    myglosem@gmail.com</p>
+                </div>
+                <div class="contact-item">
+                    <h4>🏢 주소</h4>
+                    <p>경기도 오산시 수목원로88번길 35<br>
+                    현대테라타워 B동 1005호</p>
+                </div>
+                <div class="contact-item">
+                    <h4>⏰ 업무시간</h4>
+                    <p>평일: 09:00 - 18:00<br>
+                    토요일: 09:00 - 13:00<br>
+                    일요일 및 공휴일 휴무</p>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <form>
+                    <div class="form-group">
+                        <label for="name">성함</label>
+                        <input type="text" id="name" name="name" placeholder="성함을 입력해주세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">회사명</label>
+                        <input type="text" id="company" name="company" placeholder="회사명을 입력해주세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">이메일</label>
+                        <input type="email" id="email" name="email" placeholder="이메일을 입력해주세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">연락처</label>
+                        <input type="tel" id="phone" name="phone" placeholder="연락처를 입력해주세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">문의내용</label>
+                        <textarea id="message" name="message" rows="5" placeholder="문의하실 내용을 입력해주세요" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">문의하기</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <p><strong>(주)그린테크 | GREENTECH CO., LTD.</strong></p>
+                <p>대표이사: [대표자명] | 사업자등록번호: [사업자번호]</p>
+                <p>주소: 경기도 오산시 수목원로88번길 35, 현대테라타워 B동 1005호</p>
+                <p>Tel: 070-7010-7988 | Fax: 031-665-2833 | Email: jalhanda88@gmail.com</p>
+            </div>
+            <p style="margin-top: 2rem; color: #8BC34A;">
+                &copy; 2024 GREENTECH CO., LTD. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 스크롤 시 헤더 스타일 변경
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.background = '#fff';
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // 스크롤 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // 폼 제출 처리
+        document.querySelector('.contact-form form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

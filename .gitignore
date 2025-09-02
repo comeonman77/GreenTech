@@ -1,0 +1,54 @@
+# ========================================
+# SENSITIVE CONFIGURATION FILES
+# ========================================
+# IMPORTANT: These files contain API keys
+# Never commit them to public repositories
+
+config/google-maps.json
+config/emailjs.json
+
+# ========================================
+# OPTIONAL: Site config can be committed
+# ========================================
+# Uncomment if you want to hide site config too
+# config/site-config.json
+
+# ========================================
+# OS GENERATED FILES
+# ========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ========================================
+# EDITOR FILES
+# ========================================
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# LOGS AND TEMPORARY FILES
+# ========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+node_modules/
+
+# ========================================
+# BUILD FILES (if any)
+# ========================================
+dist/
+build/
+.cache/
