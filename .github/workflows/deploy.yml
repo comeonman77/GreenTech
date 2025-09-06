@@ -1,24 +1,53 @@
-name: Deploy to GitHub Pages
-
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: Create config files
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create config directory
+        run: mkdir -p config
+
+      - name: Create Google Maps config
         run: |
-          mkdir -p config
-          echo '${{ secrets.GOOGLE_MAPS_CONFIG }}' > config/google-maps.json
-          echo '${{ secrets.EMAILJS_CONFIG }}' > config/emailjs.json
-          echo '${{ secrets.SITE_CONFIG }}' > config/site-config.json
-      
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+          cat > config/google-maps.json << 'EOF'
+          ${{ secrets.GOOGLE_MAPS_CONFIG }}
+          EOF
+
+      - name: Create EmailJS config
+        run: |
+          cat > config/emailjs.json << 'EOF'
+          ${{ secrets.EMAILJS_CONFIG }}
+          EOF
+
+      - name: Create Site config
+        run: |
+          cat > config/site-config.json << 'EOF'
+          ${{ secrets.SITE_CONFIG }}
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -51,4 +51,4 @@ node_modules/
 # ========================================
 dist/
 build/
-.cache/
+.cache/config/*.json
