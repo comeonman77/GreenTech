@@ -224,171 +224,171 @@ function closePortfolioModal() {
 // GOOGLE MAPS FUNCTIONS
 // ========================================
 
-// async function initMap() {
-//     const googleConfig = configManager.configs.google;
-//     const siteConfig = configManager.configs.site;
+async function initMap() {
+    const googleConfig = configManager.configs.google;
+    const siteConfig = configManager.configs.site;
     
-//     if (!googleConfig || !googleConfig.apiKey) {
-//         console.warn('Google Maps API key not configured');
-//         const mapDiv = document.getElementById('map');
-//         if (mapDiv) {
-//             mapDiv.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">지도를 불러올 수 없습니다.</div>';
-//         }
-//         return;
-//     }
+    if (!googleConfig || !googleConfig.apiKey) {
+        console.warn('Google Maps API key not configured');
+        const mapDiv = document.getElementById('map');
+        if (mapDiv) {
+            mapDiv.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">지도를 불러올 수 없습니다.</div>';
+        }
+        return;
+    }
 
-//     const lat = siteConfig?.location?.coordinates?.lat || 37.1498;
-//     const lng = siteConfig?.location?.coordinates?.lng || 127.0772;
-//     const greentechLocation = { lat, lng };
+    const lat = siteConfig?.location?.coordinates?.lat || 37.1498;
+    const lng = siteConfig?.location?.coordinates?.lng || 127.0772;
+    const greentechLocation = { lat, lng };
     
-//     try {
-//         const map = new google.maps.Map(document.getElementById('map'), {
-//             zoom: googleConfig.mapOptions?.zoom || 16,
-//             center: greentechLocation,
-//             styles: googleConfig.mapOptions?.styles || []
-//         });
+    try {
+        const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: googleConfig.mapOptions?.zoom || 16,
+            center: greentechLocation,
+            styles: googleConfig.mapOptions?.styles || []
+        });
         
-//         const marker = new google.maps.Marker({
-//             position: greentechLocation,
-//             map: map,
-//             title: siteConfig?.company?.name || '(주)그린테크',
-//             animation: google.maps.Animation.DROP
-//         });
+        const marker = new google.maps.Marker({
+            position: greentechLocation,
+            map: map,
+            title: siteConfig?.company?.name || '(주)그린테크',
+            animation: google.maps.Animation.DROP
+        });
         
-//         const infoWindow = new google.maps.InfoWindow({
-//             content: `
-//                 <div style="padding: 10px;">
-//                     <h4>${siteConfig?.company?.name || '(주)그린테크'}</h4>
-//                     <p>${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35<br>현대테라타워 B동 1005호'}</p>
-//                 </div>
-//             `
-//         });
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div style="padding: 10px;">
+                    <h4>${siteConfig?.company?.name || '(주)그린테크'}</h4>
+                    <p>${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35<br>현대테라타워 B동 1005호'}</p>
+                </div>
+            `
+        });
         
-//         marker.addListener('click', function() {
-//             infoWindow.open(map, marker);
-//         });
-//     } catch (error) {
-//         console.error('Error initializing Google Maps:', error);
-//     }
-// }
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    } catch (error) {
+        console.error('Error initializing Google Maps:', error);
+    }
+}
 
-// async function loadGoogleMapsScript() {
-//     const apiKey = configManager.getGoogleMapsKey();
+async function loadGoogleMapsScript() {
+    const apiKey = configManager.getGoogleMapsKey();
     
-//     if (!apiKey) {
-//         console.warn('Google Maps API key not available');
-//         return;
-//     }
+    if (!apiKey) {
+        console.warn('Google Maps API key not available');
+        return;
+    }
 
-//     return new Promise((resolve, reject) => {
-//         if (window.google && window.google.maps) {
-//             resolve();
-//             return;
-//         }
+    return new Promise((resolve, reject) => {
+        if (window.google && window.google.maps) {
+            resolve();
+            return;
+        }
 
-//         const script = document.createElement('script');
-//         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMapCallback`;
-//         script.async = true;
-//         script.defer = true;
-//         script.onerror = reject;
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMapCallback`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = reject;
         
-//         window.initMapCallback = () => {
-//             initMap();
-//             resolve();
-//         };
+        window.initMapCallback = () => {
+            initMap();
+            resolve();
+        };
         
-//         document.head.appendChild(script);
-//     });
-// }
+        document.head.appendChild(script);
+    });
+}
 
-// // ========================================
-// // EMAIL FUNCTIONS
-// // ========================================
+// ========================================
+// EMAIL FUNCTIONS
+// ========================================
 
-// async function initEmailJS() {
-//     const emailConfig = configManager.getEmailJSConfig();
+async function initEmailJS() {
+    const emailConfig = configManager.getEmailJSConfig();
     
-//     if (!emailConfig || !emailConfig.publicKey) {
-//         console.warn('EmailJS configuration not available');
-//         return false;
-//     }
+    if (!emailConfig || !emailConfig.publicKey) {
+        console.warn('EmailJS configuration not available');
+        return false;
+    }
 
-//     try {
-//         emailjs.init(emailConfig.publicKey);
-//         console.log('EmailJS initialized successfully');
-//         return true;
-//     } catch (error) {
-//         console.error('Error initializing EmailJS:', error);
-//         return false;
-//     }
-// }
+    try {
+        emailjs.init(emailConfig.publicKey);
+        console.log('EmailJS initialized successfully');
+        return true;
+    } catch (error) {
+        console.error('Error initializing EmailJS:', error);
+        return false;
+    }
+}
 
-// async function handleFormSubmit(e) {
-//     e.preventDefault();
+async function handleFormSubmit(e) {
+    e.preventDefault();
     
-//     const emailConfig = configManager.getEmailJSConfig();
-//     const siteConfig = configManager.getSiteConfig();
+    const emailConfig = configManager.getEmailJSConfig();
+    const siteConfig = configManager.getSiteConfig();
     
-//     if (!emailConfig || !emailConfig.serviceId || !emailConfig.templateId) {
-//         console.warn('EmailJS not configured, using mailto fallback');
-//         sendEmailViaMailto();
-//         return;
-//     }
+    if (!emailConfig || !emailConfig.serviceId || !emailConfig.templateId) {
+        console.warn('EmailJS not configured, using mailto fallback');
+        sendEmailViaMailto();
+        return;
+    }
 
-//     const submitBtn = document.getElementById('submitBtn');
-//     submitBtn.disabled = true;
-//     submitBtn.textContent = '전송 중...';
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '전송 중...';
     
-//     const templateParams = {
-//         from_name: document.getElementById('name').value,
-//         company: document.getElementById('company').value,
-//         from_email: document.getElementById('email').value,
-//         phone: document.getElementById('phone').value,
-//         message: document.getElementById('message').value,
-//         to_email: siteConfig?.contact?.email || 'jalhanda88@gmail.com'
-//     };
+    const templateParams = {
+        from_name: document.getElementById('name').value,
+        company: document.getElementById('company').value,
+        from_email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        message: document.getElementById('message').value,
+        to_email: siteConfig?.contact?.email || 'jalhanda88@gmail.com'
+    };
     
-//     try {
-//         await emailjs.send(
-//             emailConfig.serviceId,
-//             emailConfig.templateId,
-//             templateParams
-//         );
+    try {
+        await emailjs.send(
+            emailConfig.serviceId,
+            emailConfig.templateId,
+            templateParams
+        );
         
-//         showAlert('문의가 성공적으로 전송되었습니다. 빠른 시일 내에 연락드리겠습니다.', 'success');
-//         document.getElementById('contactForm').reset();
-//     } catch (error) {
-//         console.error('EmailJS error:', error);
-//         showAlert('전송 중 오류가 발생했습니다. 직접 이메일로 문의해주세요.', 'error');
-//     } finally {
-//         submitBtn.disabled = false;
-//         submitBtn.textContent = '문의하기';
-//     }
-// }
+        showAlert('문의가 성공적으로 전송되었습니다. 빠른 시일 내에 연락드리겠습니다.', 'success');
+        document.getElementById('contactForm').reset();
+    } catch (error) {
+        console.error('EmailJS error:', error);
+        showAlert('전송 중 오류가 발생했습니다. 직접 이메일로 문의해주세요.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '문의하기';
+    }
+}
 
-// function sendEmailViaMailto() {
-//     const name = document.getElementById('name').value;
-//     const company = document.getElementById('company').value;
-//     const email = document.getElementById('email').value;
-//     const phone = document.getElementById('phone').value;
-//     const message = document.getElementById('message').value;
+function sendEmailViaMailto() {
+    const name = document.getElementById('name').value;
+    const company = document.getElementById('company').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const message = document.getElementById('message').value;
     
-//     const subject = `[웹사이트 문의] ${name}님의 문의`;
-//     const body = `
-// 성함: ${name}
-// 회사명: ${company}
-// 이메일: ${email}
-// 연락처: ${phone}
+    const subject = `[웹사이트 문의] ${name}님의 문의`;
+    const body = `
+성함: ${name}
+회사명: ${company}
+이메일: ${email}
+연락처: ${phone}
 
-// 문의내용:
-// ${message}
-//     `;
+문의내용:
+${message}
+    `;
     
-//     const siteConfig = configManager.getSiteConfig();
-//     const toEmail = siteConfig?.contact?.email || 'jalhanda88@gmail.com';
+    const siteConfig = configManager.getSiteConfig();
+    const toEmail = siteConfig?.contact?.email || 'jalhanda88@gmail.com';
     
-//     window.location.href = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-// }
+    window.location.href = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 // ========================================
 // INITIALIZATION
