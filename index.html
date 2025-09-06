@@ -145,58 +145,104 @@
         <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
             <div class="portfolio-item" data-portfolio-id="1">
-                <div class="portfolio-image duct">
-                    <div class="portfolio-image-placeholder">
-                        <img src="images/portfolio/flexible-duct.jpg" alt="Flexible Duct" 
-                             onerror="this.style.display='none'; this.parentElement.innerHTML='Flexible Duct 이미지'">
+                <div class="portfolio-image-slider">
+                    <div class="slider-container" data-current="0">
+                        <img src="images/portfolio/flexible-duct-1.jpg" alt="Flexible Duct" class="slider-image active">
+                        <img src="images/portfolio/flexible-duct-2.jpg" alt="Flexible Duct 설치" class="slider-image">
+                        <img src="images/portfolio/flexible-duct-3.jpg" alt="Flexible Duct 상세" class="slider-image">
                     </div>
+                    <div class="slider-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                    </div>
+                    <button class="slider-prev">‹</button>
+                    <button class="slider-next">›</button>
                 </div>
                 <div class="portfolio-content">
                     <h3>고성능 Flexible Duct 시스템</h3>
                     <p>반도체 Fab 클린룸 환경에 최적화된 플렉시블 덕트 시스템 구축</p>
+                    <div class="portfolio-tags">
+                        <span class="tag">클린룸</span>
+                        <span class="tag">반도체</span>
+                        <span class="tag">덕트</span>
+                    </div>
                     <button class="portfolio-btn">자세히 보기 →</button>
                 </div>
             </div>
 
             <!-- Portfolio Item 2 -->
             <div class="portfolio-item" data-portfolio-id="2">
-                <div class="portfolio-image thc">
-                    <div class="portfolio-image-placeholder">
-                        <img src="images/portfolio/thc-meter.jpg" alt="THC 측정기" 
-                             onerror="this.style.display='none'; this.parentElement.innerHTML='THC 측정기 이미지'">
+                <div class="portfolio-image-slider">
+                    <div class="slider-container" data-current="0">
+                        <img src="images/portfolio/thc-meter-1.jpg" alt="THC 측정기" class="slider-image active">
+                        <img src="images/portfolio/thc-meter-2.jpg" alt="THC 측정기 디스플레이" class="slider-image">
+                        <img src="images/portfolio/thc-meter-3.jpg" alt="THC 측정기 설치" class="slider-image">
                     </div>
+                    <div class="slider-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                    </div>
+                    <button class="slider-prev">‹</button>
+                    <button class="slider-next">›</button>
                 </div>
                 <div class="portfolio-content">
                     <h3>차세대 THC 측정기</h3>
                     <p>실시간 모니터링이 가능한 고정밀 THC 측정기 개발 및 공급</p>
+                    <div class="portfolio-tags">
+                        <span class="tag">측정기</span>
+                        <span class="tag">모니터링</span>
+                        <span class="tag">정밀장비</span>
+                    </div>
                     <button class="portfolio-btn">자세히 보기 →</button>
                 </div>
             </div>
 
             <!-- Portfolio Item 3 -->
             <div class="portfolio-item" data-portfolio-id="3">
-                <div class="portfolio-image heating">
-                    <div class="portfolio-image-placeholder">
-                        <img src="images/portfolio/heating-system.jpg" alt="히팅 시스템" 
-                             onerror="this.style.display='none'; this.parentElement.innerHTML='히팅 시스템 이미지'">
+                <div class="portfolio-image-slider">
+                    <div class="slider-container" data-current="0">
+                        <img src="images/portfolio/heating-system-1.jpg" alt="히팅 시스템" class="slider-image active">
+                        <img src="images/portfolio/heating-system-2.jpg" alt="히팅 시스템 컨트롤" class="slider-image">
+                        <img src="images/portfolio/heating-system-3.jpg" alt="히팅 시스템 설치" class="slider-image">
                     </div>
+                    <div class="slider-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                    </div>
+                    <button class="slider-prev">‹</button>
+                    <button class="slider-next">›</button>
                 </div>
                 <div class="portfolio-content">
                     <h3>맞춤형 히팅 솔루션</h3>
                     <p>다양한 반도체 공정에 적용 가능한 맞춤형 히팅 시스템 개발</p>
+                    <div class="portfolio-tags">
+                        <span class="tag">히팅</span>
+                        <span class="tag">온도제어</span>
+                        <span class="tag">맞춤형</span>
+                    </div>
                     <button class="portfolio-btn">자세히 보기 →</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Portfolio Modal -->
+    <!-- Enhanced Portfolio Modal -->
     <div class="portfolio-modal" id="portfolioModal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
             <div class="modal-body">
-                <div class="modal-image">
-                    <img id="modalImage" src="" alt="">
+                <div class="modal-gallery">
+                    <div class="gallery-main">
+                        <img id="modalMainImage" src="" alt="">
+                        <button class="gallery-nav gallery-prev">‹</button>
+                        <button class="gallery-nav gallery-next">›</button>
+                    </div>
+                    <div class="gallery-thumbs" id="galleryThumbs">
+                        <!-- Thumbnails will be inserted here -->
+                    </div>
                 </div>
                 <div class="modal-info">
                     <h2 id="modalTitle"></h2>
@@ -208,6 +254,10 @@
                     <div class="modal-specs">
                         <h4>기술 사양</h4>
                         <div id="modalSpecs"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="modal-btn primary">견적 요청</button>
+                        <button class="modal-btn secondary">카탈로그 다운로드</button>
                     </div>
                 </div>
             </div>

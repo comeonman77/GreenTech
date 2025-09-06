@@ -196,7 +196,7 @@ function openPortfolioModal(portfolioId) {
     modalImage.src = data.image;
     modalImage.alt = data.title;
     modalImage.onerror = function() {
-        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U4ZjVlOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM0Q0FGNTA');
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U4ZjVlOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM0Q0FGNTA';
     };
     
     // Update features
@@ -422,6 +422,9 @@ async function initApp() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize application
     initApp();
+    
+    // Initialize image sliders
+    initImageSliders();
 
     // Hamburger menu toggle
     const hamburger = document.getElementById('hamburger');
@@ -519,3 +522,317 @@ document.addEventListener('DOMContentLoaded', function() {
         contactForm.addEventListener('submit', handleFormSubmit);
     }
 });
+
+// Advanced Google Maps initialization
+async function initAdvancedMap() {
+    const googleConfig = configManager.configs.google;
+    const siteConfig = configManager.configs.site;
+    
+    if (!googleConfig?.apiKey) return;
+
+    // Coordinates for GreenTech
+    const greentechLocation = {
+        lat: siteConfig?.location?.coordinates?.lat || 37.1498,
+        lng: siteConfig?.location?.coordinates?.lng || 127.0772
+    };
+    
+    // Create map
+    const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: googleConfig.mapOptions?.zoom || 16,
+        center: greentechLocation,
+        mapTypeId: googleConfig.mapOptions?.mapTypeId || 'roadmap',
+        styles: googleConfig.mapOptions?.styles || [],
+        ...googleConfig.mapOptions
+    });
+    
+    // Custom marker with animation
+    const marker = new google.maps.Marker({
+        position: greentechLocation,
+        map: map,
+        title: siteConfig?.company?.name || '(주)그린테크',
+        animation: google.maps.Animation[googleConfig.markerOptions?.animation] || google.maps.Animation.DROP,
+        icon: {
+            url: 'images/map-marker.png', // Custom marker icon
+            scaledSize: new google.maps.Size(40, 40)
+        }
+    });
+    
+    // Info window with rich content
+    const infoWindow = new google.maps.InfoWindow({
+        content: `
+            <div style="padding: 15px; max-width: 300px;">
+                <h3 style="color: #1b5e20; margin-bottom: 10px;">
+                    ${siteConfig?.company?.name || '(주)그린테크'}
+                </h3>
+                <p style="margin: 5px 0;">
+                    <strong>주소:</strong><br>
+                    ${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35'}
+                </p>
+                <p style="margin: 5px 0;">
+                    <strong>전화:</strong> ${siteConfig?.contact?.phone || '070-7010-7988'}
+                </p>
+                <a href="https://maps.google.com?q=${greentechLocation.lat},${greentechLocation.lng}" 
+                   target="_blank" 
+                   style="color: #4CAF50; text-decoration: none;">
+                    Google Maps에서 보기 →
+                </a>
+            </div>
+        `
+    });
+    
+    // Open info window on click
+    marker.addListener('click', () => {
+        infoWindow.open(map, marker);
+    });
+    
+    // Add custom controls
+    const centerControl = document.createElement('button');
+    centerControl.textContent = '위치 중심으로';
+    centerControl.style.cssText = `
+        background: white;
+        border: 2px solid #4CAF50;
+        border-radius: 3px;
+        color: #4CAF50;
+        cursor: pointer;
+        margin: 10px;
+        padding: 8px 12px;
+        font-weight: 500;
+    `;
+    centerControl.addEventListener('click', () => {
+        map.setCenter(greentechLocation);
+        map.setZoom(16);
+    });
+    
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControl);
+    
+    // Add directions button
+    const directionsBtn = document.createElement('button');
+    directionsBtn.textContent = '길찾기';
+    directionsBtn.style.cssText = centerControl.style.cssText;
+    directionsBtn.style.background = '#4CAF50';
+    directionsBtn.style.color = 'white';
+    directionsBtn.addEventListener('click', () => {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${greentechLocation.lat},${greentechLocation.lng}`, '_blank');
+    });
+    
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(directionsBtn);
+}
+
+// Enhanced EmailJS Form Handler
+class EmailJSHandler {
+    constructor() {
+        this.initialized = false;
+        this.sendCount = 0;
+        this.lastSentTime = null;
+        this.rateLimitMinutes = 5;
+    }
+
+    async init() {
+        const config = await configManager.getEmailJSConfig();
+        if (!config?.publicKey) {
+            console.warn('EmailJS not configured');
+            return false;
+        }
+
+        try {
+            emailjs.init(config.publicKey);
+            this.config = config;
+            this.initialized = true;
+            console.log('EmailJS initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('EmailJS initialization failed:', error);
+            return false;
+        }
+    }
+
+    // Rate limiting
+    canSend() {
+        if (!this.lastSentTime) return true;
+        
+        const now = Date.now();
+        const timeDiff = (now - this.lastSentTime) / 1000 / 60; // minutes
+        
+        if (timeDiff < this.rateLimitMinutes) {
+            const waitTime = Math.ceil(this.rateLimitMinutes - timeDiff);
+            showAlert(`잠시 후 다시 시도해주세요. (${waitTime}분 후 가능)`, 'warning');
+            return false;
+        }
+        
+        return true;
+    }
+
+    // Validate form data
+    validateForm(formData) {
+        const errors = [];
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.from_email)) {
+            errors.push('올바른 이메일 주소를 입력해주세요.');
+        }
+
+        // Phone validation (Korean format)
+        const phoneRegex = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$/;
+        if (formData.phone && !phoneRegex.test(formData.phone)) {
+            errors.push('전화번호 형식: 010-1234-5678');
+        }
+
+        // Message length
+        if (formData.message.length < 10) {
+            errors.push('문의 내용은 10자 이상 입력해주세요.');
+        }
+
+        if (formData.message.length > 1000) {
+            errors.push('문의 내용은 1000자 이내로 입력해주세요.');
+        }
+
+        return errors;
+    }
+
+    // Generate inquiry number
+    generateInquiryNumber() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        return `${year}${month}${day}${random}`;
+    }
+
+    // Send email
+    async sendEmail(formData) {
+        if (!this.initialized) {
+            throw new Error('EmailJS not initialized');
+        }
+
+        if (!this.canSend()) {
+            return false;
+        }
+
+        // Validate form
+        const errors = this.validateForm(formData);
+        if (errors.length > 0) {
+            showAlert(errors.join('\n'), 'error');
+            return false;
+        }
+
+        const inquiryNumber = this.generateInquiryNumber();
+        const timestamp = new Date().toLocaleString('ko-KR');
+
+        // Prepare template parameters
+        const templateParams = {
+            ...formData,
+            to_email: this.config.settings?.toEmail || 'jalhanda88@gmail.com',
+            inquiry_number: inquiryNumber,
+            timestamp: timestamp,
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+        };
+
+        try {
+            // Send main email
+            const response = await emailjs.send(
+                this.config.serviceId,
+                this.config.templateId,
+                templateParams
+            );
+
+            console.log('Email sent successfully:', response);
+
+            // Send auto-reply if configured
+            if (this.config.autoReplyTemplateId) {
+                await this.sendAutoReply(templateParams);
+            }
+
+            // Update rate limiting
+            this.lastSentTime = Date.now();
+            this.sendCount++;
+
+            // Store in localStorage for reference
+            this.storeInquiry(templateParams);
+
+            return true;
+        } catch (error) {
+            console.error('Email send failed:', error);
+            throw error;
+        }
+    }
+
+    // Send auto-reply
+    async sendAutoReply(params) {
+        try {
+            await emailjs.send(
+                this.config.serviceId,
+                this.config.autoReplyTemplateId,
+                params
+            );
+            console.log('Auto-reply sent');
+        } catch (error) {
+            console.error('Auto-reply failed:', error);
+        }
+    }
+
+    // Store inquiry locally
+    storeInquiry(data) {
+        const inquiries = JSON.parse(localStorage.getItem('inquiries') || '[]');
+        inquiries.push({
+            ...data,
+            sentAt: Date.now()
+        });
+        
+        // Keep only last 10 inquiries
+        if (inquiries.length > 10) {
+            inquiries.shift();
+        }
+        
+        localStorage.setItem('inquiries', JSON.stringify(inquiries));
+    }
+}
+
+// Initialize EmailJS handler
+const emailHandler = new EmailJSHandler();
+
+// Form submission handler
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const form = e.target;
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = '전송 중...';
+    
+    // Collect form data
+    const formData = {
+        from_name: form.name.value.trim(),
+        company: form.company.value.trim(),
+        from_email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        message: form.message.value.trim()
+    };
+    
+    try {
+        const success = await emailHandler.sendEmail(formData);
+        
+        if (success) {
+            showAlert('문의가 성공적으로 접수되었습니다. 확인 메일을 발송했습니다.', 'success');
+            form.reset();
+            
+            // Show inquiry number
+            const inquiryNumber = emailHandler.generateInquiryNumber();
+            showModal(`
+                <h3>접수 완료</h3>
+                <p>접수번호: <strong>${inquiryNumber}</strong></p>
+                <p>24시간 이내에 답변 드리겠습니다.</p>
+            `);
+        }
+    } catch (error) {
+        showAlert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'error');
+        console.error('Form submission error:', error);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '문의하기';
+    }
+}
