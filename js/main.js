@@ -176,15 +176,15 @@ const configManager = new ConfigManager();
 // UI FUNCTIONS
 // ========================================
 
-function showLoader() {
-    const loader = document.getElementById('loadingSpinner');
-    if (loader) loader.classList.add('active');
-}
+// function showLoader() {
+//     const loader = document.getElementById('loadingSpinner');
+//     if (loader) loader.classList.add('active');
+// }
 
-function hideLoader() {
-    const loader = document.getElementById('loadingSpinner');
-    if (loader) loader.classList.remove('active');
-}
+// function hideLoader() {
+//     const loader = document.getElementById('loadingSpinner');
+//     if (loader) loader.classList.remove('active');
+// }
 
 function showAlert(message, type) {
     const alertDiv = document.createElement('div');
@@ -376,8 +376,8 @@ window.initMapCallback = async function() {
         return;
     }
 
-    const lat = siteConfig?.location?.coordinates?.lat || 37.1498;
-    const lng = siteConfig?.location?.coordinates?.lng || 127.0772;
+    const lat = siteConfig?.location?.coordinates?.lat || 37.143574621291094;
+    const lng = siteConfig?.location?.coordinates?.lng || 127.05966031328906;
     const greentechLocation = { lat, lng };
     
     try {
