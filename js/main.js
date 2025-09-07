@@ -176,15 +176,15 @@ const configManager = new ConfigManager();
 // UI FUNCTIONS
 // ========================================
 
-// function showLoader() {
-//     const loader = document.getElementById('loadingSpinner');
-//     if (loader) loader.classList.add('active');
-// }
+function showLoader() {
+    const loader = document.getElementById('loadingSpinner');
+    if (loader) loader.classList.add('active');
+}
 
-// function hideLoader() {
-//     const loader = document.getElementById('loadingSpinner');
-//     if (loader) loader.classList.remove('active');
-// }
+function hideLoader() {
+    const loader = document.getElementById('loadingSpinner');
+    if (loader) loader.classList.remove('active');
+}
 
 function showAlert(message, type) {
     const alertDiv = document.createElement('div');
