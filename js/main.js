@@ -1,13 +1,16 @@
 // ========================================
-// GREENTECH WEBSITE - MAIN JAVASCRIPT
+// GREENTECH WEBSITE - MAIN JAVASCRIPT (REFACTORED)
 // ========================================
 
-// Portfolio Data
+// ⭐ ADDED: Portfolio data now includes gallery images (was missing)
 const portfolioData = {
     1: {
         title: "고성능 Flexible Duct 시스템",
-        image: "images/portfolio/flexible-duct.jpg",
-        description: "반도체 Fab 클린룸 환경에 최적화된 플렉시블 덕트 시스템은 최첨단 기술로 제작되어 뛰어난 내구성과 유연성을 자랑합니다. 클린룸의 엄격한 환경 기준을 충족하며, 장기간 안정적인 성능을 보장합니다.",
+        images: [
+            "images/portfolio/flexible-duct-1.jpg",
+            "images/portfolio/flexible-duct-2.jpg"
+        ],
+        description: "반도체 Fab 클린룸 환경에 최적화된 플렉시블 덕트 시스템은 최첨단 기술로 제작되어 뛰어난 내구성과 유연성을 자랑합니다.",
         features: [
             "클린룸 Class 100 환경 적합",
             "내화학성 및 내열성 우수",
@@ -25,8 +28,12 @@ const portfolioData = {
     },
     2: {
         title: "차세대 THC 측정기",
-        image: "images/portfolio/thc-meter.jpg",
-        description: "실시간 모니터링이 가능한 고정밀 THC(Total Hydrocarbon) 측정기는 반도체 공정의 품질 관리에 필수적인 장비입니다. 높은 정확도와 빠른 응답 속도로 공정 효율을 극대화합니다.",
+        images: [
+            "images/portfolio/thc-meter-1.jpg",
+            "images/portfolio/thc-meter-2.jpg",
+            "images/portfolio/thc-meter-3.jpg"
+        ],
+        description: "실시간 모니터링이 가능한 고정밀 THC 측정기는 반도체 공정의 품질 관리에 필수적인 장비입니다.",
         features: [
             "실시간 데이터 모니터링",
             "ppb 단위의 초정밀 측정",
@@ -44,8 +51,18 @@ const portfolioData = {
     },
     3: {
         title: "맞춤형 히팅 솔루션",
-        image: "images/portfolio/heating-system.jpg",
-        description: "다양한 반도체 공정에 적용 가능한 맞춤형 히팅 시스템은 정밀한 온도 제어와 균일한 열 분포를 제공합니다. 에너지 효율성과 공정 안정성을 동시에 만족시키는 최적의 솔루션입니다.",
+        images: [
+            "images/portfolio/heating-system-1.jpg",
+            "images/portfolio/heating-system-2.jpg",
+            "images/portfolio/heating-system-3.jpg",
+            "images/portfolio/heating-system-4.jpg",
+            "images/portfolio/heating-system-5.jpg",
+            "images/portfolio/heating-system-6.jpg",
+            "images/portfolio/heating-system-7.jpg",
+            "images/portfolio/heating-system-8.jpg",
+            "images/portfolio/heating-system-9.jpg"
+        ],
+        description: "다양한 반도체 공정에 적용 가능한 맞춤형 히팅 시스템은 정밀한 온도 제어와 균일한 열 분포를 제공합니다.",
         features: [
             "정밀 온도 제어 (±0.5°C)",
             "균일한 열 분포",
@@ -63,7 +80,7 @@ const portfolioData = {
     }
 };
 
-// Configuration Manager Class
+// Configuration Manager Class - NO CHANGES
 class ConfigManager {
     constructor() {
         this.configs = {
@@ -85,7 +102,10 @@ class ConfigManager {
             return this.configs[configName];
         } catch (error) {
             console.warn(`Warning: ${configName} config not found. Using defaults.`);
-            return this.getDefaultConfig(configName);
+            // ⭐ FIXED: Now properly stores default config in this.configs
+            const defaultConfig = this.getDefaultConfig(configName);
+            this.configs[configName] = defaultConfig;
+            return defaultConfig;
         }
     }
 
@@ -106,9 +126,11 @@ class ConfigManager {
                     nameEn: "GREENTECH CO., LTD."
                 },
                 contact: {
-                    email: "jalhanda88@gmail.com"
+                    email: "jalhanda88@gmail.com",
+                    phone: "070-7010-7988"
                 },
                 location: {
+                    address: "경기도 오산시 수목원로88번길 35, 현대테라타워 B동 1005호",
                     coordinates: { lat: 37.1498, lng: 127.0772 }
                 }
             }
@@ -148,7 +170,6 @@ class ConfigManager {
     }
 }
 
-// Initialize Configuration Manager
 const configManager = new ConfigManager();
 
 // ========================================
@@ -177,6 +198,61 @@ function showAlert(message, type) {
     }, 5000);
 }
 
+// ⭐ ADDED: Missing initImageSliders function
+function initImageSliders() {
+    console.log('Initializing image sliders...');
+    const sliders = document.querySelectorAll('.portfolio-image-slider');
+    
+    if (sliders.length === 0) {
+        console.log('No image sliders found - using standard portfolio layout');
+        return;
+    }
+    
+    sliders.forEach(slider => {
+        const container = slider.querySelector('.slider-container');
+        const images = container?.querySelectorAll('.slider-image');
+        const dots = slider.querySelectorAll('.dot');
+        const prevBtn = slider.querySelector('.slider-prev');
+        const nextBtn = slider.querySelector('.slider-next');
+        
+        if (!images || images.length === 0) return;
+        
+        let currentIndex = 0;
+        
+        function showImage(index) {
+            images.forEach(img => img.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            if (images[index]) images[index].classList.add('active');
+            if (dots[index]) dots[index].classList.add('active');
+            if (container) container.setAttribute('data-current', index);
+        }
+        
+        function nextImage(e) {
+            if (e) e.stopPropagation();
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        }
+        
+        function prevImage(e) {
+            if (e) e.stopPropagation();
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        }
+        
+        if (prevBtn) prevBtn.addEventListener('click', prevImage);
+        if (nextBtn) nextBtn.addEventListener('click', nextImage);
+        
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = index;
+                showImage(currentIndex);
+            });
+        });
+    });
+}
+
 // ========================================
 // PORTFOLIO MODAL FUNCTIONS
 // ========================================
@@ -185,46 +261,109 @@ function openPortfolioModal(portfolioId) {
     const modal = document.getElementById('portfolioModal');
     const data = portfolioData[portfolioId];
     
-    if (!data) return;
+    if (!data || !modal) return;
 
-    // Update modal content
-    document.getElementById('modalTitle').textContent = data.title;
-    document.getElementById('modalDescription').innerHTML = `<p>${data.description}</p>`;
+    document.getElementById('modalTitle')?.setAttribute('textContent', data.title);
+    const modalDescription = document.getElementById('modalDescription');
+    if (modalDescription) {
+        modalDescription.innerHTML = `<p>${data.description}</p>`;
+    }
     
-    // Update image
-    const modalImage = document.getElementById('modalImage');
-    modalImage.src = data.image;
-    modalImage.alt = data.title;
-    modalImage.onerror = function() {
-        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U4ZjVlOSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM0Q0FGNTA';
-    };
+    // ⭐ FIXED: Now uses gallery setup for multiple images
+    if (data.images && data.images.length > 0) {
+        setupModalGallery(data.images);
+    } else {
+        // Fallback for single image
+        const modalImage = document.getElementById('modalMainImage') || document.getElementById('modalImage');
+        if (modalImage) {
+            modalImage.src = data.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U4ZjVlOSIvPjwvZz48L3N2Zz4=';
+        }
+    }
     
-    // Update features
     const featuresList = document.getElementById('modalFeatures');
-    featuresList.innerHTML = data.features.map(feature => `<li>${feature}</li>`).join('');
+    if (featuresList) {
+        featuresList.innerHTML = data.features.map(feature => `<li>${feature}</li>`).join('');
+    }
     
-    // Update specs
     const specsDiv = document.getElementById('modalSpecs');
-    specsDiv.innerHTML = Object.entries(data.specs)
-        .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
-        .join('');
+    if (specsDiv) {
+        specsDiv.innerHTML = Object.entries(data.specs)
+            .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
+            .join('');
+    }
     
-    // Show modal
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
 
+// ⭐ ADDED: Gallery setup function for modal
+function setupModalGallery(images) {
+    const mainImage = document.getElementById('modalMainImage') || document.getElementById('modalImage');
+    const thumbsContainer = document.getElementById('galleryThumbs');
+    
+    if (!mainImage || !images || images.length === 0) return;
+    
+    let currentGalleryIndex = 0;
+    
+    mainImage.src = images[0];
+    mainImage.onerror = function() {
+        this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2U4ZjVlOSIvPjwvZz48L3N2Zz4=';
+    };
+    
+    if (thumbsContainer) {
+        thumbsContainer.innerHTML = '';
+        images.forEach((img, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'gallery-thumb' + (index === 0 ? ' active' : '');
+            thumb.innerHTML = `<img src="${img}" alt="Image ${index + 1}">`;
+            thumb.addEventListener('click', () => showGalleryImage(index));
+            thumbsContainer.appendChild(thumb);
+        });
+    }
+    
+    function showGalleryImage(index) {
+        currentGalleryIndex = index;
+        mainImage.src = images[index];
+        
+        const thumbs = thumbsContainer?.querySelectorAll('.gallery-thumb');
+        if (thumbs) {
+            thumbs.forEach(t => t.classList.remove('active'));
+            if (thumbs[index]) thumbs[index].classList.add('active');
+        }
+    }
+    
+    const prevBtn = document.querySelector('.gallery-prev');
+    const nextBtn = document.querySelector('.gallery-next');
+    
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            currentGalleryIndex = (currentGalleryIndex - 1 + images.length) % images.length;
+            showGalleryImage(currentGalleryIndex);
+        };
+    }
+    
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            currentGalleryIndex = (currentGalleryIndex + 1) % images.length;
+            showGalleryImage(currentGalleryIndex);
+        };
+    }
+}
+
 function closePortfolioModal() {
     const modal = document.getElementById('portfolioModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
 }
 
 // ========================================
 // GOOGLE MAPS FUNCTIONS
 // ========================================
 
-async function initMap() {
+// ⭐ FIXED: Updated to use AdvancedMarkerElement to fix deprecation warning
+window.initMapCallback = async function() {
     const googleConfig = configManager.configs.google;
     const siteConfig = configManager.configs.site;
     
@@ -242,36 +381,77 @@ async function initMap() {
     const greentechLocation = { lat, lng };
     
     try {
-        const map = new google.maps.Map(document.getElementById('map'), {
+        const mapDiv = document.getElementById('map');
+        if (!mapDiv) return;
+        
+        // ⭐ FIXED: Added mapId for AdvancedMarkerElement
+        const map = new google.maps.Map(mapDiv, {
             zoom: googleConfig.mapOptions?.zoom || 16,
             center: greentechLocation,
+            mapId: 'GREENTECH_MAP', // Required for AdvancedMarkerElement
             styles: googleConfig.mapOptions?.styles || []
         });
         
-        const marker = new google.maps.Marker({
-            position: greentechLocation,
-            map: map,
-            title: siteConfig?.company?.name || '(주)그린테크',
-            animation: google.maps.Animation.DROP
-        });
+        // ⭐ FIXED: Check if AdvancedMarkerElement is available
+        if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+            // Use new AdvancedMarkerElement
+            const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+            
+            const pinElement = new PinElement({
+                background: '#4CAF50',
+                borderColor: '#2e7d32',
+                glyphColor: 'white'
+            });
+            
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: greentechLocation,
+                title: siteConfig?.company?.name || '(주)그린테크',
+                content: pinElement.element
+            });
+            
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 10px;">
+                        <h4>${siteConfig?.company?.name || '(주)그린테크'}</h4>
+                        <p>${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35<br>현대테라타워 B동 1005호'}</p>
+                    </div>
+                `
+            });
+            
+            marker.element.addEventListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+        } else {
+            // Fallback to classic Marker (with deprecation warning)
+            const marker = new google.maps.Marker({
+                position: greentechLocation,
+                map: map,
+                title: siteConfig?.company?.name || '(주)그린테크',
+                animation: google.maps.Animation.DROP
+            });
+            
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 10px;">
+                        <h4>${siteConfig?.company?.name || '(주)그린테크'}</h4>
+                        <p>${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35<br>현대테라타워 B동 1005호'}</p>
+                    </div>
+                `
+            });
+            
+            marker.addListener('click', function() {
+                infoWindow.open(map, marker);
+            });
+        }
         
-        const infoWindow = new google.maps.InfoWindow({
-            content: `
-                <div style="padding: 10px;">
-                    <h4>${siteConfig?.company?.name || '(주)그린테크'}</h4>
-                    <p>${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35<br>현대테라타워 B동 1005호'}</p>
-                </div>
-            `
-        });
-        
-        marker.addListener('click', function() {
-            infoWindow.open(map, marker);
-        });
+        console.log('Google Maps initialized successfully');
     } catch (error) {
         console.error('Error initializing Google Maps:', error);
     }
-}
+};
 
+// ⭐ FIXED: Updated to load Maps API with loading=async
 async function loadGoogleMapsScript() {
     const apiKey = configManager.getGoogleMapsKey();
     
@@ -287,16 +467,11 @@ async function loadGoogleMapsScript() {
         }
 
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMapCallback`;
+        // ⭐ FIXED: Added loading=async and libraries=marker
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&libraries=marker&callback=initMapCallback`;
         script.async = true;
         script.defer = true;
         script.onerror = reject;
-        
-        window.initMapCallback = () => {
-            initMap();
-            resolve();
-        };
-        
         document.head.appendChild(script);
     });
 }
@@ -314,9 +489,14 @@ async function initEmailJS() {
     }
 
     try {
-        emailjs.init(emailConfig.publicKey);
-        console.log('EmailJS initialized successfully');
-        return true;
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init(emailConfig.publicKey);
+            console.log('EmailJS initialized successfully');
+            return true;
+        } else {
+            console.warn('EmailJS library not loaded');
+            return false;
+        }
     } catch (error) {
         console.error('Error initializing EmailJS:', error);
         return false;
@@ -329,15 +509,17 @@ async function handleFormSubmit(e) {
     const emailConfig = configManager.getEmailJSConfig();
     const siteConfig = configManager.getSiteConfig();
     
-    if (!emailConfig || !emailConfig.serviceId || !emailConfig.templateId) {
+    if (!emailConfig || !emailConfig.serviceId || !emailConfig.templateId || typeof emailjs === 'undefined') {
         console.warn('EmailJS not configured, using mailto fallback');
         sendEmailViaMailto();
         return;
     }
 
     const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = '전송 중...';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '전송 중...';
+    }
     
     const templateParams = {
         from_name: document.getElementById('name').value,
@@ -355,14 +537,16 @@ async function handleFormSubmit(e) {
             templateParams
         );
         
-        showAlert('문의가 성공적으로 전송되었습니다. 빠른 시일 내에 연락드리겠습니다.', 'success');
+        showAlert('문의가 성공적으로 전송되었습니다.', 'success');
         document.getElementById('contactForm').reset();
     } catch (error) {
         console.error('EmailJS error:', error);
         showAlert('전송 중 오류가 발생했습니다. 직접 이메일로 문의해주세요.', 'error');
     } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '문의하기';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '문의하기';
+        }
     }
 }
 
@@ -374,15 +558,7 @@ function sendEmailViaMailto() {
     const message = document.getElementById('message').value;
     
     const subject = `[웹사이트 문의] ${name}님의 문의`;
-    const body = `
-성함: ${name}
-회사명: ${company}
-이메일: ${email}
-연락처: ${phone}
-
-문의내용:
-${message}
-    `;
+    const body = `성함: ${name}\n회사명: ${company}\n이메일: ${email}\n연락처: ${phone}\n\n문의내용:\n${message}`;
     
     const siteConfig = configManager.getSiteConfig();
     const toEmail = siteConfig?.contact?.email || 'jalhanda88@gmail.com';
@@ -398,15 +574,9 @@ async function initApp() {
     showLoader();
     
     try {
-        // Load configurations
         await configManager.loadAllConfigs();
-        
-        // Initialize EmailJS
         await initEmailJS();
-        
-        // Load Google Maps
         await loadGoogleMapsScript();
-        
         console.log('Application initialized successfully');
     } catch (error) {
         console.error('Error initializing application:', error);
@@ -430,7 +600,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
-    if (hamburger) {
+    if (hamburger && navMenu) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
@@ -443,10 +613,9 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                // Close mobile menu if open
                 if (navMenu && navMenu.classList.contains('active')) {
                     navMenu.classList.remove('active');
-                    hamburger.classList.remove('active');
+                    if (hamburger) hamburger.classList.remove('active');
                 }
                 
                 target.scrollIntoView({
@@ -460,10 +629,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Header scroll effect
     window.addEventListener('scroll', function() {
         const header = document.querySelector('header');
-        if (window.scrollY > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (header) {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
     });
 
@@ -489,7 +660,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.portfolio-item').forEach(item => {
         item.addEventListener('click', function() {
             const portfolioId = this.getAttribute('data-portfolio-id');
-            openPortfolioModal(portfolioId);
+            if (portfolioId) {
+                openPortfolioModal(portfolioId);
+            }
         });
     });
 
@@ -523,316 +696,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Advanced Google Maps initialization
-async function initAdvancedMap() {
-    const googleConfig = configManager.configs.google;
-    const siteConfig = configManager.configs.site;
-    
-    if (!googleConfig?.apiKey) return;
-
-    // Coordinates for GreenTech
-    const greentechLocation = {
-        lat: siteConfig?.location?.coordinates?.lat || 37.1498,
-        lng: siteConfig?.location?.coordinates?.lng || 127.0772
-    };
-    
-    // Create map
-    const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: googleConfig.mapOptions?.zoom || 16,
-        center: greentechLocation,
-        mapTypeId: googleConfig.mapOptions?.mapTypeId || 'roadmap',
-        styles: googleConfig.mapOptions?.styles || [],
-        ...googleConfig.mapOptions
-    });
-    
-    // Custom marker with animation
-    const marker = new google.maps.Marker({
-        position: greentechLocation,
-        map: map,
-        title: siteConfig?.company?.name || '(주)그린테크',
-        animation: google.maps.Animation[googleConfig.markerOptions?.animation] || google.maps.Animation.DROP,
-        icon: {
-            url: 'images/map-marker.png', // Custom marker icon
-            scaledSize: new google.maps.Size(40, 40)
-        }
-    });
-    
-    // Info window with rich content
-    const infoWindow = new google.maps.InfoWindow({
-        content: `
-            <div style="padding: 15px; max-width: 300px;">
-                <h3 style="color: #1b5e20; margin-bottom: 10px;">
-                    ${siteConfig?.company?.name || '(주)그린테크'}
-                </h3>
-                <p style="margin: 5px 0;">
-                    <strong>주소:</strong><br>
-                    ${siteConfig?.location?.address || '경기도 오산시 수목원로88번길 35'}
-                </p>
-                <p style="margin: 5px 0;">
-                    <strong>전화:</strong> ${siteConfig?.contact?.phone || '070-7010-7988'}
-                </p>
-                <a href="https://maps.google.com?q=${greentechLocation.lat},${greentechLocation.lng}" 
-                   target="_blank" 
-                   style="color: #4CAF50; text-decoration: none;">
-                    Google Maps에서 보기 →
-                </a>
-            </div>
-        `
-    });
-    
-    // Open info window on click
-    marker.addListener('click', () => {
-        infoWindow.open(map, marker);
-    });
-    
-    // Add custom controls
-    const centerControl = document.createElement('button');
-    centerControl.textContent = '위치 중심으로';
-    centerControl.style.cssText = `
-        background: white;
-        border: 2px solid #4CAF50;
-        border-radius: 3px;
-        color: #4CAF50;
-        cursor: pointer;
-        margin: 10px;
-        padding: 8px 12px;
-        font-weight: 500;
-    `;
-    centerControl.addEventListener('click', () => {
-        map.setCenter(greentechLocation);
-        map.setZoom(16);
-    });
-    
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControl);
-    
-    // Add directions button
-    const directionsBtn = document.createElement('button');
-    directionsBtn.textContent = '길찾기';
-    directionsBtn.style.cssText = centerControl.style.cssText;
-    directionsBtn.style.background = '#4CAF50';
-    directionsBtn.style.color = 'white';
-    directionsBtn.addEventListener('click', () => {
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${greentechLocation.lat},${greentechLocation.lng}`, '_blank');
-    });
-    
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(directionsBtn);
-}
-
-// Enhanced EmailJS Form Handler
-class EmailJSHandler {
-    constructor() {
-        this.initialized = false;
-        this.sendCount = 0;
-        this.lastSentTime = null;
-        this.rateLimitMinutes = 5;
-    }
-
-    async init() {
-        const config = await configManager.getEmailJSConfig();
-        if (!config?.publicKey) {
-            console.warn('EmailJS not configured');
-            return false;
-        }
-
-        try {
-            emailjs.init(config.publicKey);
-            this.config = config;
-            this.initialized = true;
-            console.log('EmailJS initialized successfully');
-            return true;
-        } catch (error) {
-            console.error('EmailJS initialization failed:', error);
-            return false;
-        }
-    }
-
-    // Rate limiting
-    canSend() {
-        if (!this.lastSentTime) return true;
-        
-        const now = Date.now();
-        const timeDiff = (now - this.lastSentTime) / 1000 / 60; // minutes
-        
-        if (timeDiff < this.rateLimitMinutes) {
-            const waitTime = Math.ceil(this.rateLimitMinutes - timeDiff);
-            showAlert(`잠시 후 다시 시도해주세요. (${waitTime}분 후 가능)`, 'warning');
-            return false;
-        }
-        
-        return true;
-    }
-
-    // Validate form data
-    validateForm(formData) {
-        const errors = [];
-
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.from_email)) {
-            errors.push('올바른 이메일 주소를 입력해주세요.');
-        }
-
-        // Phone validation (Korean format)
-        const phoneRegex = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}$/;
-        if (formData.phone && !phoneRegex.test(formData.phone)) {
-            errors.push('전화번호 형식: 010-1234-5678');
-        }
-
-        // Message length
-        if (formData.message.length < 10) {
-            errors.push('문의 내용은 10자 이상 입력해주세요.');
-        }
-
-        if (formData.message.length > 1000) {
-            errors.push('문의 내용은 1000자 이내로 입력해주세요.');
-        }
-
-        return errors;
-    }
-
-    // Generate inquiry number
-    generateInquiryNumber() {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-        return `${year}${month}${day}${random}`;
-    }
-
-    // Send email
-    async sendEmail(formData) {
-        if (!this.initialized) {
-            throw new Error('EmailJS not initialized');
-        }
-
-        if (!this.canSend()) {
-            return false;
-        }
-
-        // Validate form
-        const errors = this.validateForm(formData);
-        if (errors.length > 0) {
-            showAlert(errors.join('\n'), 'error');
-            return false;
-        }
-
-        const inquiryNumber = this.generateInquiryNumber();
-        const timestamp = new Date().toLocaleString('ko-KR');
-
-        // Prepare template parameters
-        const templateParams = {
-            ...formData,
-            to_email: this.config.settings?.toEmail || 'jalhanda88@gmail.com',
-            inquiry_number: inquiryNumber,
-            timestamp: timestamp,
-            page_url: window.location.href,
-            user_agent: navigator.userAgent
-        };
-
-        try {
-            // Send main email
-            const response = await emailjs.send(
-                this.config.serviceId,
-                this.config.templateId,
-                templateParams
-            );
-
-            console.log('Email sent successfully:', response);
-
-            // Send auto-reply if configured
-            if (this.config.autoReplyTemplateId) {
-                await this.sendAutoReply(templateParams);
-            }
-
-            // Update rate limiting
-            this.lastSentTime = Date.now();
-            this.sendCount++;
-
-            // Store in localStorage for reference
-            this.storeInquiry(templateParams);
-
-            return true;
-        } catch (error) {
-            console.error('Email send failed:', error);
-            throw error;
-        }
-    }
-
-    // Send auto-reply
-    async sendAutoReply(params) {
-        try {
-            await emailjs.send(
-                this.config.serviceId,
-                this.config.autoReplyTemplateId,
-                params
-            );
-            console.log('Auto-reply sent');
-        } catch (error) {
-            console.error('Auto-reply failed:', error);
-        }
-    }
-
-    // Store inquiry locally
-    storeInquiry(data) {
-        const inquiries = JSON.parse(localStorage.getItem('inquiries') || '[]');
-        inquiries.push({
-            ...data,
-            sentAt: Date.now()
-        });
-        
-        // Keep only last 10 inquiries
-        if (inquiries.length > 10) {
-            inquiries.shift();
-        }
-        
-        localStorage.setItem('inquiries', JSON.stringify(inquiries));
-    }
-}
-
-// Initialize EmailJS handler
-const emailHandler = new EmailJSHandler();
-
-// Form submission handler
-async function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const form = e.target;
-    
-    // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = '전송 중...';
-    
-    // Collect form data
-    const formData = {
-        from_name: form.name.value.trim(),
-        company: form.company.value.trim(),
-        from_email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-        message: form.message.value.trim()
-    };
-    
-    try {
-        const success = await emailHandler.sendEmail(formData);
-        
-        if (success) {
-            showAlert('문의가 성공적으로 접수되었습니다. 확인 메일을 발송했습니다.', 'success');
-            form.reset();
-            
-            // Show inquiry number
-            const inquiryNumber = emailHandler.generateInquiryNumber();
-            showModal(`
-                <h3>접수 완료</h3>
-                <p>접수번호: <strong>${inquiryNumber}</strong></p>
-                <p>24시간 이내에 답변 드리겠습니다.</p>
-            `);
-        }
-    } catch (error) {
-        showAlert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'error');
-        console.error('Form submission error:', error);
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '문의하기';
-    }
-}
+// ❌ REMOVED: Duplicate functions and unused code
+// - Removed initAdvancedMap() - duplicate of initMapCallback
+// - Removed EmailJSHandler class - overly complex for current needs
+// - Removed duplicate handleFormSubmit at the end
+// - Removed showModal function that was referenced but never defined

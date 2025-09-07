@@ -125,7 +125,6 @@ nav a:hover:after {
    ======================================== */
 .hero {
     background: linear-gradient(135deg, rgba(46, 125, 50, 0.85) 0%, rgba(27, 94, 32, 0.85) 100%), 
-                url('../images/hero-bg.jpg'),
                 url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
     background-size: cover;
     background-position: center;
