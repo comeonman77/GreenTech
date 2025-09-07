@@ -131,7 +131,7 @@ class ConfigManager {
                 },
                 location: {
                     address: "경기도 오산시 수목원로88번길 35, 현대테라타워 B동 1005호",
-                    coordinates: { lat: 37.1498, lng: 127.0772 }
+                    coordinates: { lat: 37.143574621291094, lng: 127.05966031328906 }
                 }
             }
         };
