@@ -907,7 +907,13 @@ footer {
 }
 
 .loading-spinner.active {
-    display: block;
+    /* display: block; */
+    display: block !important;
+}
+
+/* Force hide when explicitly set */
+.loading-spinner[style*="display: none"] {
+    display: none !important;
 }
 
 .spinner {

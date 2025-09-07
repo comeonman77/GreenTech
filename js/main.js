@@ -178,12 +178,18 @@ const configManager = new ConfigManager();
 
 function showLoader() {
     const loader = document.getElementById('loadingSpinner');
-    if (loader) loader.classList.add('active');
+    if (loader) {
+        loader.classList.add('active');
+        loader.style.display = 'block';
+    }
 }
 
 function hideLoader() {
     const loader = document.getElementById('loadingSpinner');
-    if (loader) loader.classList.remove('active');
+    if (loader) {
+        loader.classList.remove('active');
+        loader.style.display = 'none';
+    }
 }
 
 function showAlert(message, type) {
@@ -571,18 +577,74 @@ function sendEmailViaMailto() {
 // ========================================
 
 async function initApp() {
-    showLoader();
+    // More robust loader handling
+    const loader = document.getElementById('loadingSpinner');
+    const hasLoader = loader !== null;
+    
+    if (hasLoader) {
+        loader.classList.add('active');
+        loader.style.display = 'block'; // Force display
+    }
     
     try {
-        await configManager.loadAllConfigs();
-        await initEmailJS();
-        await loadGoogleMapsScript();
+        // Load configurations with individual error handling
+        try {
+            await configManager.loadAllConfigs();
+            console.log('✓ Configurations loaded');
+        } catch (configError) {
+            console.warn('Configuration loading failed, using defaults:', configError);
+            // Continue with defaults - don't fail the entire app
+        }
+        
+        // Initialize EmailJS (non-critical)
+        try {
+            await initEmailJS();
+            console.log('✓ EmailJS initialized');
+        } catch (emailError) {
+            console.warn('EmailJS initialization failed:', emailError);
+            // Continue without email functionality
+        }
+        
+        // Load Google Maps (non-critical)
+        try {
+            await loadGoogleMapsScript();
+            console.log('✓ Google Maps loaded');
+        } catch (mapsError) {
+            console.warn('Google Maps loading failed:', mapsError);
+            // Continue without maps
+        }
+        
         console.log('Application initialized successfully');
+        
     } catch (error) {
-        console.error('Error initializing application:', error);
+        console.error('Critical error during initialization:', error);
     } finally {
-        hideLoader();
+        // Ensure loader is hidden no matter what
+        if (hasLoader) {
+            // Use multiple methods to ensure it's hidden
+            loader.classList.remove('active');
+            loader.style.display = 'none';
+            
+            // Fallback: remove loader after a short delay if still visible
+            setTimeout(() => {
+                if (loader && (loader.classList.contains('active') || loader.style.display !== 'none')) {
+                    console.warn('Force removing stuck loader');
+                    loader.style.display = 'none';
+                    loader.classList.remove('active');
+                }
+            }, 100);
+        }
     }
+    
+    // Additional safety: remove loader if it exists anywhere after init
+    setTimeout(() => {
+        const anyLoader = document.querySelector('.loading-spinner.active, #loadingSpinner');
+        if (anyLoader && anyLoader.style.display !== 'none') {
+            console.warn('Removing persistent loader element');
+            anyLoader.style.display = 'none';
+            anyLoader.classList.remove('active');
+        }
+    }, 1000);
 }
 
 // ========================================
