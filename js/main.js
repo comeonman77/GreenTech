@@ -654,6 +654,14 @@ async function initApp() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize application
     initApp();
+
+    const loader = document.getElementById('loadingSpinner');
+    const hasLoader = loader !== null;
+    
+    if (hasLoader) {
+        loader.classList.add('active');
+        loader.style.display = 'block'; // Force display
+    }
     
     // Initialize image sliders
     initImageSliders();
