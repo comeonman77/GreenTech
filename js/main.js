@@ -658,10 +658,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const loader = document.getElementById('loadingSpinner');
     const hasLoader = loader !== null;
     
-    if (hasLoader) {
-        loader.classList.add('active');
-        loader.style.display = 'block'; // Force display
-    }
+    if (hasLoader)
+        loader.classList.remove('active');
     
     // Initialize image sliders
     initImageSliders();
